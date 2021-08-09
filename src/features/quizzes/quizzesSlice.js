@@ -1,20 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addQuizId } from "../topics/topicsSlice";
 
-export const createNewQuiz = (payload) => {
-  return (dispatch) => {
-    dispatch(
-      addQuiz({
-        id: payload.id,
-        name: payload.name,
-        cardIds: payload.cardIds,
-        topicId: payload.topicId
-      })
-    );
-    dispatch(addQuizId({ topicId: payload.topicId, quizId: payload.id }));
-  };
-};
-
 export const quizzesSlice = createSlice({
   name: "quizzes",
   initialState: {
@@ -26,11 +12,26 @@ export const quizzesSlice = createSlice({
         id: action.payload.id,
         topicId: action.payload.topicId,
         name: action.payload.name,
-        cardIds: []
+        cardIds: action.payload.cardIds
       };
     }
   }
 });
+
+export const createNewQuiz = (payload) => {
+  const { id, name, topicId, cardIds } = payload;
+  return (dispatch) => {
+    dispatch(
+      addQuiz({
+        id,
+        name,
+        topicId,
+        cardIds
+      })
+    );
+    dispatch(addQuizId({ topicId: topicId, quizId: id }));
+  };
+};
 
 export const selectQuizzes = (state) => state.quizzes.quizzes;
 export const { addQuiz } = quizzesSlice.actions;
